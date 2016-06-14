@@ -1,7 +1,9 @@
 package com.example.mayank.dotusermodule;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
@@ -78,7 +80,7 @@ public class AdapterItems extends RecyclerView.Adapter<AdapterItems.ElementHolde
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ElementHolder h, int position) {
+    public void onBindViewHolder(final ElementHolder h, final int position) {
 
 //        final boolean[] flag = {true};
 //        final Bitmap[] bitmap = new Bitmap[1];
@@ -106,7 +108,12 @@ public class AdapterItems extends RecyclerView.Adapter<AdapterItems.ElementHolde
 //        {
 //            h.iv.setImageResource(R.drawable.img0);
 //        }
+
+        boolean flag = false;
+
         if(mDataset.size()>0) {
+
+
             h.tv.setText(mDataset.get(position).name);
             try {
                 Bitmap myBitmapAgain = decodeBase64(mDataset.get(position).image);
@@ -121,12 +128,79 @@ public class AdapterItems extends RecyclerView.Adapter<AdapterItems.ElementHolde
         {
             h.tv.setText("TestData"+position);
         }
+
+        h.sb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+                sendIntent.setType("text/plain");
+                context.startActivity(sendIntent);
+            }
+        });
+
+        h.lb.setOnClickListener(new View.OnClickListener() {
+            boolean flag = false;
+            @Override
+            public void onClick(View v) {
+                if(flag) {
+                    flag = false;
+                    h.lb.setImageResource(R.drawable.ic_favorite_border_white_18dp);
+                }
+                else {
+                    flag = true;
+                    h.lb.setImageResource(R.drawable.ic_favorite_red_500_18dp);
+                }
+            }
+        });
+
+        h.cb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
+
+        if(position < mDataset.size()) {
+            h.iv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, ActivityServiceInfo.class);
+                    intent.putExtra("name", mDataset.get(position).name);
+                    intent.putExtra("gender", mDataset.get(position).gender);
+                    intent.putExtra("quality", mDataset.get(position).quality);
+                    intent.putExtra("length", mDataset.get(position).length);
+                    intent.putExtra("faceCut", mDataset.get(position).faceCut);
+                    intent.putExtra("image", mDataset.get(position).image);
+                    context.startActivity(intent);
+                }
+            });
+        }
+        else
+        {
+            h.iv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, ActivityServiceInfo.class);
+                    intent.putExtra("name", "TESTNAME");
+                    intent.putExtra("gender", "TESTGENDER");
+                    intent.putExtra("quality", "TESTQUALITY");
+                    intent.putExtra("length", "TESTLENGTH");
+                    intent.putExtra("faceCut","TESTFACECUT");
+                    intent.putExtra("image","");
+                    context.startActivity(intent);
+                }
+            });
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return 5;
+        if(mDataset.size()>0)
+            return mDataset.size();
+        else
+            return 5;
     }
 
 }

@@ -18,6 +18,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ActivityServiceInfo"
+            android:label="@string/title_activity_serviceinfo"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ActivityCart"
+            android:label="@string/title_activity_activity_cart"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ActivityFilter"></activity>
     </application>
 
 </manifest>

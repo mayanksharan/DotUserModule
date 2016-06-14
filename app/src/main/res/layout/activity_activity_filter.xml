@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.mayank.dotusermodule.ActivityFilter">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text = "Hair Length"
+        android:id="@+id/t1"
+        android:textSize="20sp"
+        android:paddingTop="20dp"
+        />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/length_array"
+        android:id="@+id/spinner1"
+        android:layout_below="@+id/t1"
+        >
+
+    </Spinner>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text = "Hair Quality"
+        android:id="@+id/t2"
+        android:textSize="20sp"
+        android:layout_below="@+id/spinner1"
+        android:paddingTop="20dp"
+        />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/quality_array"
+        android:layout_below="@+id/t2"
+        android:id="@+id/spinner2"
+        >
+
+    </Spinner>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text = "Face Cut"
+        android:id="@+id/t3"
+        android:textSize="20sp"
+        android:layout_below="@+id/spinner2"
+        android:paddingTop="20dp"
+        />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/facecut_array"
+        android:layout_below="@+id/t3"
+        android:id="@+id/spinner3"
+        >
+
+    </Spinner>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text = "CANCEL"
+        android:background="#fff"
+        android:id = "@+id/but1"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text = "DONE"
+        android:background="#fff"
+        android:id = "@+id/but2"/>
+
+</RelativeLayout>

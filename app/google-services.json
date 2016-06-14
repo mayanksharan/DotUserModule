@@ -1,0 +1,43 @@
+{
+  "project_info": {
+    "project_number": "1098615541546",
+    "firebase_url": "https://crackling-fire-4425.firebaseio.com",
+    // https://project-1465488381886623726.firebaseio.com
+    "project_id": "project-1465488381886623726",
+    "storage_bucket": "project-1465488381886623726.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1098615541546:android:dca43cf6b065bb6a",
+        "android_client_info": {
+          "package_name": "com.example.mayank.dotusermodule"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1098615541546-7gtn37j8epbprig026easp4juatoh6b4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARoJxTGg7gsMAeJKmzNcny2Qk2Z8FWct4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,6 +1,10 @@
 package com.example.mayank.dotusermodule;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -22,6 +26,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,8 +43,10 @@ public class MainActivity extends AppCompatActivity
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private Context mContext;
+    private Activity mActivity;
 
     private static int height;
+    static int fil = 0;
 
     public static int geth()
     {
@@ -48,11 +56,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         mContext = this;
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -81,6 +91,24 @@ public class MainActivity extends AppCompatActivity
 
         height = metrics.heightPixels;
 
+        ImageView im = (ImageView) findViewById(R.id.cart);
+        im.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext,ActivityCart.class);
+                startActivity(intent);
+            }
+        });
+
+        try
+        {
+            Intent intent = getIntent();
+            fil = intent.getIntExtra("Filter",0);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -146,6 +174,8 @@ public class MainActivity extends AppCompatActivity
         private ArrayList<Data> mDataset;
         RecyclerView mRecyclerView;
         static int secnum;
+        private TextView tv;
+        private static int lengthf = 0, qualityf = 0,fcf = 0;
 
         /**
          * The fragment argument representing the section number for this
@@ -172,41 +202,67 @@ public class MainActivity extends AppCompatActivity
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                                  Bundle savedInstanceState) {
-            Log.d("LOLO","dfsfdsfdsf");
 
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
             mRecyclerView = (RecyclerView) rootView.findViewById(R.id.item_recycler_view);
             RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(mContext,2);
             mRecyclerView.setLayoutManager(mLayoutManager);
-            getDataset();
+            final RecyclerView.Adapter mAdapter = new AdapterItems(mDataset,mContext);
+            mRecyclerView.setAdapter(mAdapter);
 
-            return rootView;
-        }
+            tv = (TextView) rootView.findViewById(R.id.rem_from_cart);
+            tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(rootView.getContext(),ActivityCart.class);
+                    startActivity(intent);
+                }
+            });
 
-        public void getDataset()
-        {
-            ArrayList<Data> temp = new ArrayList<>();
+            ImageView iv = (ImageView) rootView.findViewById(R.id.filter_button);
+            iv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(rootView.getContext(),ActivityFilter.class);
+                    startActivity(intent);
+//                    ((Activity)getContext()).overridePendingTransition(R.transition.slide_in_up, R.transition.slide_out_up);
+                }
+            });
+
+
             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             DatabaseReference databaseReference = firebaseDatabase.getReferenceFromUrl("https://crackling-fire-4425.firebaseio.com");
             databaseReference.child("data").addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Log.d("LOL", "Datachange");
+                    int temp = fil;
+                    lengthf = temp % 10;
+                    temp /= 10;
+                    qualityf = temp % 10;
+                    temp /= 10;
+                    fcf = temp;
                     setDataset(dataSnapshot);
                     Log.d("LLL", mDataset.size() + "");
-
                     RecyclerView.Adapter mAdapter = new AdapterItems(mDataset,mContext);
                     mRecyclerView.setAdapter(mAdapter);
+
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
+                    Log.e("KHJKH","kjdhkhfdjk");
 
                 }
+
             });
+
+
+            return rootView;
         }
+
 
         private void setDataset (DataSnapshot ds)
         {
@@ -221,9 +277,25 @@ public class MainActivity extends AppCompatActivity
                 String f = ds.child("hair" + i).child("image").getValue(String.class);
 
                 Data temp = new Data(a, b, c, d, e, f);
-                mDataset.add(temp);
+                if(filter(temp)) {
+                    mDataset.add(temp);
+                }
             }
 
+        }
+
+        private boolean filter(Data t)
+        {
+            Log.d("FIL Vals",lengthf+" "+qualityf+" "+fcf);
+            if(lengthf == 1 && !t.length.equals("S")) return false;
+            if(lengthf == 2 && !t.length.equals("M")) return false;
+            if(lengthf == 3 && !t.length.equals("L")) return false;
+            if(qualityf == 1 && !t.quality.equals("Soft")) return false;
+            if(qualityf == 2 && !t.quality.equals("Hard")) return false;
+            if(fcf == 1 && !t.faceCut.equals("Oblong")) return false;
+            if(fcf == 2 && !t.faceCut.equals("Diamond")) return false;
+            if(fcf == 3 && !t.faceCut.equals("Heart")) return false;
+            return true;
         }
     }
 
