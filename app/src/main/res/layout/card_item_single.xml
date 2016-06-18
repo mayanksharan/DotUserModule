@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="1dp"
+    android:layout_marginLeft="2dp"
+    android:layout_marginRight="2dp"
+    app:cardElevation="5dp">
+
+    <LinearLayout
+        android:id="@+id/cis_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:orientation="vertical"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/cisrl"
+            android:layout_alignParentTop="true"
+            >
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="match_parent"
+                android:text = "ghadfjhgshfjds"
+                android:gravity="center|left"
+                android:id="@+id/cis_name"
+                android:textSize="20sp"
+                />
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:src = "@drawable/dots_horizontal"/>
+        </LinearLayout>
+
+        <ImageView
+        android:id="@+id/cis_img"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_below="@+id/cisrl"
+        android:layout_above="@+id/cis_rl_rl"
+        android:src = "@drawable/img0"
+        android:scaleType="centerCrop"
+        />
+
+        <LinearLayout
+            android:id="@+id/cis_rl_rl"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_alignParentBottom="true"
+            >
+            <ImageView
+                android:paddingRight="2dp"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:id="@+id/cis_lb"
+                android:layout_height="match_parent"
+                android:src = "@drawable/ic_favorite_border_black_24dp"/>
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/cis_ib"
+                android:src = "@drawable/ic_list_black_18dp"
+                />
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/cis_cb"
+                android:src = "@drawable/ic_shopping_basket_black_18dp"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

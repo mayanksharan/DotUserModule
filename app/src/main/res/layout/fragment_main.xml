@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:paddingTop="10dp"
     android:orientation="vertical"
-    tools:context="com.example.mayank.dotusermodule.MainActivity$PlaceholderFragment">
+    tools:context="com.example.mayank.dotusermodule.PlaceholderFragment">
 
        <android.support.v7.widget.RecyclerView
             android:id="@+id/item_recycler_view"
@@ -12,12 +12,12 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_above="@+id/sdj"
-            android:layout_weight="14"
+            android:layout_weight="1"
           />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="45dp"
         android:id="@+id/sdj"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
@@ -25,40 +25,40 @@
         android:orientation="horizontal"
         android:baselineAligned="false"
         android:paddingTop="2dp"
-        android:layout_weight="1">
-        <TextView
-            android:layout_height="match_parent"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:background="#000"
-            android:text = "REMOVE"
-            android:textSize="15sp"
-            android:textColor="#fff"
-            android:gravity="center"
-            android:id = "@+id/rem_from_cart"
-            >
-        </TextView>
+        android:elevation="20dp">
         <ImageView
             android:layout_height="match_parent"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:src = "@drawable/filter"
-            android:background="#000"
+
+            android:src = "@drawable/border_all_black"
+            android:gravity="center"
+            android:id = "@+id/switch_config"
+            android:layout_marginRight="1dp"
+            >
+        </ImageView>
+        <ImageView
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:src = "@drawable/filter_outline"
+
             android:padding="4dp"
-            android:id = "@+id/filter_button">
+            android:id = "@+id/filter_button"
+            android:layout_marginRight="1dp">
 
         </ImageView>
         <TextView
             android:layout_height="match_parent"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:background="#000"
+            android:textStyle="bold"
             android:text = "SELECT SALON"
-            android:textSize="15sp"
-            android:textColor="#fff"
+            android:textSize="17sp"
             android:gravity="center"
             >
         </TextView>
     </LinearLayout>
+
 
 </LinearLayout>

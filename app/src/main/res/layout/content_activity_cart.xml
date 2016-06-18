@@ -12,4 +12,15 @@
     tools:context="com.example.mayank.dotusermodule.ActivityCart"
     tools:showIn="@layout/activity_activity_cart">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/item_recycler_view2"
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+    </LinearLayout>
+
 </RelativeLayout>

@@ -3,7 +3,6 @@ package com.example.mayank.dotusermodule;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
@@ -16,12 +15,18 @@ import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by mayank on 04/06/16.
@@ -40,7 +45,7 @@ public class AdapterItems extends RecyclerView.Adapter<AdapterItems.ElementHolde
     public AdapterItems(ArrayList<Data> myDataset, android.content.Context context) {
         this.mContext = context;
         mDataset = myDataset;
-        storageReference = storage.getReferenceFromUrl("gs://project-1465488381886623726.appspot.com");
+        storageReference = storage.getReferenceFromUrl("gs://dotz-2f65f.appspot.com/");
     }
 
     public static class ElementHolder extends RecyclerView.ViewHolder {
@@ -65,7 +70,7 @@ public class AdapterItems extends RecyclerView.Adapter<AdapterItems.ElementHolde
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_item, parent, false);
 
         ElementHolder eh = new ElementHolder(v);
-        heightpixels = MainActivity.geth();
+        heightpixels = MainActivity.getHeight();
         eh.rl.getLayoutParams().height = (heightpixels) / 2;
 
         return eh;
@@ -78,36 +83,28 @@ public class AdapterItems extends RecyclerView.Adapter<AdapterItems.ElementHolde
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
+    public Bitmap getbmpfromURL(String surl){
+        Log.d("img",surl);
+        try {
+            URL url = new URL(surl);
+            HttpURLConnection urlcon = (HttpURLConnection) url.openConnection();
+            urlcon.setDoInput(true);
+            urlcon.connect();
+            InputStream in = urlcon.getInputStream();
+            Bitmap mIcon = BitmapFactory.decodeStream(in);
+            return  mIcon;
+        } catch (Exception e) {
+            Log.e("Error", "jhsd");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(final ElementHolder h, final int position) {
 
-//        final boolean[] flag = {true};
-//        final Bitmap[] bitmap = new Bitmap[1];
-//        StorageReference imgRef = storageReference.child("img"+position+".jpg");
-//
-//        imgRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-//            @Override
-//            public void onSuccess(byte[] bytes) {
-//                // Data returns, use this as needed
-//                Log.d("df","fd");
-//                bitmap[0] = BitmapFactory.decodeByteArray(bytes , 0, bytes.length);
-//            }
-//        }).addOnFailureListener(new OnFailureListener() {
-//            @Override
-//            public void onFailure(Exception e) {
-//                // Handle any errors
-//                flag[0] = false;
-//            }
-//        });
-//
-//        if(flag[0]){
-//            h.iv.setImageBitmap(bitmap[0]);
-//        }
-//        else
-//        {
-//            h.iv.setImageResource(R.drawable.img0);
-//        }
+//        StorageReference imgRef = storageReference.child("Hairstyles/h2.jpg");
 
         boolean flag = false;
 
@@ -115,14 +112,44 @@ public class AdapterItems extends RecyclerView.Adapter<AdapterItems.ElementHolde
 
 
             h.tv.setText(mDataset.get(position).name);
-            try {
-                Bitmap myBitmapAgain = decodeBase64(mDataset.get(position).image);
-                h.iv.setImageBitmap(myBitmapAgain);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+            StorageReference imgRef = storage.getReferenceFromUrl(mDataset.get(position).image);
+
+            final long ONE_MEGABYTE = 1024 * 1024;
+            imgRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    Log.d("kjdh","dhsu");
+                    h.iv.setImageBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeByteArray(bytes, 0 , bytes.length),120,120,false));
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(Exception exception) {
+                    // Handle any errors
+                }
+            });
+
+
+//            h.iv.setImageBitmap(getbmpfromURL(mDataset.get(position).image));
+//            URL url = null;
+//            try {
+//                url = new URL(mDataset.get(position).image);
+//                Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+//                h.iv.setImageBitmap(bmp);
+//
+//            }
+//            catch (Exception e) {
+//                e.printStackTrace();
+//            }
+
+//            try {
+//                Bitmap myBitmapAgain = decodeBase64(mDataset.get(position).image);
+////                h.iv.setImageBitmap(Bitmap.createScaledBitmap(myBitmapAgain,120,120,false));
+//                h.iv.setImageBitmap(myBitmapAgain);
+//            }
+//            catch (Exception e)
+//            {
+//                e.printStackTrace();
+//            }
         }
         else
         {
@@ -158,6 +185,14 @@ public class AdapterItems extends RecyclerView.Adapter<AdapterItems.ElementHolde
         h.cb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                final DatabaseReference databaseReference = firebaseDatabase.getReferenceFromUrl("https://crackling-fire-4425.firebaseio.com");
+
+                Map<String,Object> map = new HashMap<String, Object>();
+                map.put(mDataset.get(position).name,"text");
+                databaseReference.child("cart").updateChildren(map);
+
+
             }
         });
 
@@ -192,6 +227,12 @@ public class AdapterItems extends RecyclerView.Adapter<AdapterItems.ElementHolde
                 }
             });
         }
+
+
+
+
+
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)
