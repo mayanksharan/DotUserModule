@@ -53,27 +53,35 @@ public class AdapterItems extends RecyclerView.Adapter<AdapterItems.ElementHolde
         RelativeLayout rl;
         ImageView iv,sb,lb,cb;
         TextView tv;
-        public ElementHolder(View v) {
+        public ElementHolder(View v,int type) {
             super(v);
-            rl = (RelativeLayout) v.findViewById(R.id.ci_rl);
-            tv = (TextView) v.findViewById(R.id.ci_title);
-            iv = (ImageView) v.findViewById(R.id.ci_img);
-            sb = (ImageView) v.findViewById(R.id.share_button);
-            lb = (ImageView) v.findViewById(R.id.like_button);
-            cb = (ImageView) v.findViewById(R.id.addToCart_button);
+            if(type == 0) {
+                rl = (RelativeLayout) v.findViewById(R.id.ci_rl);
+                tv = (TextView) v.findViewById(R.id.ci_title);
+                iv = (ImageView) v.findViewById(R.id.ci_img);
+                sb = (ImageView) v.findViewById(R.id.share_button);
+                lb = (ImageView) v.findViewById(R.id.like_button);
+                cb = (ImageView) v.findViewById(R.id.addToCart_button);
+            }
         }
     }
 
     public AdapterItems.ElementHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         this.context = parent.getContext();
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_item, parent, false);
+        if(mDataset.size() > 0) {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_item, parent, false);
 
-        ElementHolder eh = new ElementHolder(v);
-        heightpixels = MainActivity.getHeight();
-        eh.rl.getLayoutParams().height = (heightpixels) / 2;
-
-        return eh;
+            ElementHolder eh = new ElementHolder(v,0);
+            heightpixels = MainActivity.getHeight();
+            eh.rl.getLayoutParams().height = (heightpixels) / 2;
+            return eh;
+        }
+        else {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.loading_page,parent,false);
+            ElementHolder eh = new ElementHolder(v,1);
+            return eh;
+        }
     }
 
     public static Bitmap decodeBase64(String input) throws IOException
@@ -83,30 +91,11 @@ public class AdapterItems extends RecyclerView.Adapter<AdapterItems.ElementHolde
         return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 
-    public Bitmap getbmpfromURL(String surl){
-        Log.d("img",surl);
-        try {
-            URL url = new URL(surl);
-            HttpURLConnection urlcon = (HttpURLConnection) url.openConnection();
-            urlcon.setDoInput(true);
-            urlcon.connect();
-            InputStream in = urlcon.getInputStream();
-            Bitmap mIcon = BitmapFactory.decodeStream(in);
-            return  mIcon;
-        } catch (Exception e) {
-            Log.e("Error", "jhsd");
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(final ElementHolder h, final int position) {
 
 //        StorageReference imgRef = storageReference.child("Hairstyles/h2.jpg");
-
-        boolean flag = false;
 
         if(mDataset.size()>0) {
 
@@ -118,8 +107,8 @@ public class AdapterItems extends RecyclerView.Adapter<AdapterItems.ElementHolde
             imgRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                 @Override
                 public void onSuccess(byte[] bytes) {
-                    Log.d("kjdh","dhsu");
-                    h.iv.setImageBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeByteArray(bytes, 0 , bytes.length),120,120,false));
+                    Log.d("kjdh", "dhsu");
+                    h.iv.setImageBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length), 120, 120, false));
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -150,88 +139,78 @@ public class AdapterItems extends RecyclerView.Adapter<AdapterItems.ElementHolde
 //            {
 //                e.printStackTrace();
 //            }
-        }
-        else
-        {
-            h.tv.setText("TestData"+position);
-        }
-
-        h.sb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
-                sendIntent.setType("text/plain");
-                context.startActivity(sendIntent);
-            }
-        });
-
-        h.lb.setOnClickListener(new View.OnClickListener() {
-            boolean flag = false;
-            @Override
-            public void onClick(View v) {
-                if(flag) {
-                    flag = false;
-                    h.lb.setImageResource(R.drawable.ic_favorite_border_white_18dp);
-                }
-                else {
-                    flag = true;
-                    h.lb.setImageResource(R.drawable.ic_favorite_red_500_18dp);
-                }
-            }
-        });
-
-        h.cb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-                final DatabaseReference databaseReference = firebaseDatabase.getReferenceFromUrl("https://crackling-fire-4425.firebaseio.com");
-
-                Map<String,Object> map = new HashMap<String, Object>();
-                map.put(mDataset.get(position).name,"text");
-                databaseReference.child("cart").updateChildren(map);
 
 
-            }
-        });
-
-        if(position < mDataset.size()) {
-            h.iv.setOnClickListener(new View.OnClickListener() {
+            h.sb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, ActivityServiceInfo.class);
-                    intent.putExtra("name", mDataset.get(position).name);
-                    intent.putExtra("gender", mDataset.get(position).gender);
-                    intent.putExtra("quality", mDataset.get(position).quality);
-                    intent.putExtra("length", mDataset.get(position).length);
-                    intent.putExtra("faceCut", mDataset.get(position).faceCut);
-                    intent.putExtra("image", mDataset.get(position).image);
-                    context.startActivity(intent);
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+                    sendIntent.setType("text/plain");
+                    context.startActivity(sendIntent);
                 }
             });
-        }
-        else
-        {
-            h.iv.setOnClickListener(new View.OnClickListener() {
+
+            h.lb.setOnClickListener(new View.OnClickListener() {
+                boolean flag = false;
+
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, ActivityServiceInfo.class);
-                    intent.putExtra("name", "TESTNAME");
-                    intent.putExtra("gender", "TESTGENDER");
-                    intent.putExtra("quality", "TESTQUALITY");
-                    intent.putExtra("length", "TESTLENGTH");
-                    intent.putExtra("faceCut","TESTFACECUT");
-                    intent.putExtra("image","");
-                    context.startActivity(intent);
+                    if (flag) {
+                        flag = false;
+                        h.lb.setImageResource(R.drawable.ic_favorite_border_white_18dp);
+                    } else {
+                        flag = true;
+                        h.lb.setImageResource(R.drawable.ic_favorite_red_500_18dp);
+                    }
                 }
             });
+
+            h.cb.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                    final DatabaseReference databaseReference = firebaseDatabase.getReferenceFromUrl("https://crackling-fire-4425.firebaseio.com");
+
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    map.put(mDataset.get(position).name, "text");
+                    databaseReference.child("cart").updateChildren(map);
+
+
+                }
+            });
+
+            if (position < mDataset.size()) {
+                h.iv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, ActivityServiceInfo.class);
+                        intent.putExtra("name", mDataset.get(position).name);
+                        intent.putExtra("gender", mDataset.get(position).gender);
+                        intent.putExtra("quality", mDataset.get(position).quality);
+                        intent.putExtra("length", mDataset.get(position).length);
+                        intent.putExtra("faceCut", mDataset.get(position).faceCut);
+                        intent.putExtra("image", mDataset.get(position).image);
+                        context.startActivity(intent);
+                    }
+                });
+            } else {
+                h.iv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(context, ActivityServiceInfo.class);
+                        intent.putExtra("name", "TESTNAME");
+                        intent.putExtra("gender", "TESTGENDER");
+                        intent.putExtra("quality", "TESTQUALITY");
+                        intent.putExtra("length", "TESTLENGTH");
+                        intent.putExtra("faceCut", "TESTFACECUT");
+                        intent.putExtra("image", "");
+                        context.startActivity(intent);
+                    }
+                });
+            }
         }
-
-
-
-
-
 
     }
 
@@ -241,7 +220,7 @@ public class AdapterItems extends RecyclerView.Adapter<AdapterItems.ElementHolde
         if(mDataset.size()>0)
             return mDataset.size();
         else
-            return 5;
+            return 1;
     }
 
 }

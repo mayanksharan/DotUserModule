@@ -1,5 +1,6 @@
 package com.example.mayank.dotusermodule;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,7 +33,7 @@ public class PlaceholderFragment extends Fragment {
     static int secnum;
     private static int lengthf = 0, qualityf = 0,fcf = 0;
     boolean grid = true;
-
+    ProgressDialog dialog;
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -60,24 +61,42 @@ public class PlaceholderFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
+
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         final RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.item_recycler_view);
         final RecyclerView.Adapter[] mAdapter = new RecyclerView.Adapter[1];
-        if(grid) {
-            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(mContext, 2);
+        if(!grid) {
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext);
             mRecyclerView.setLayoutManager(mLayoutManager);
-
-            mAdapter[0] = new AdapterItemsSingle(mDataset, mContext);
+            if(mDataset.size()>0) {
+                mAdapter[0] = new AdapterItemsSingle(mDataset, mContext);
+                Log.d("Adapter","Linear Data"+mDataset.size());
+            }
+            else{
+                Log.d("Adapter","Linear Loading"+mDataset.size());
+                mAdapter[0] = new AdapterLoading();
+            }
             mRecyclerView.setAdapter(mAdapter[0]);
         }
         else
         {
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext);
-            mRecyclerView.setLayoutManager(mLayoutManager);
+            if(mDataset.size()>0) {
+                RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(mContext, 2);
+                mRecyclerView.setLayoutManager(mLayoutManager);
 
-            mAdapter[0] = new AdapterItems(mDataset, mContext);
+                mAdapter[0] = new AdapterItemsSingle(mDataset, mContext);
+                Log.d("Adapter","Grid Data"+mDataset.size());
+            }
+            else{
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext);
+                mRecyclerView.setLayoutManager(mLayoutManager);
+
+                mAdapter[0] = new AdapterLoading();
+                Log.d("Adapter","Grid Loading"+mDataset.size());
+            }
             mRecyclerView.setAdapter(mAdapter[0]);
         }
+
 
 
         final ImageView iv2 = (ImageView) rootView.findViewById(R.id.switch_config);
@@ -90,16 +109,34 @@ public class PlaceholderFragment extends Fragment {
                     grid = false;
                     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext);
                     mRecyclerView.setLayoutManager(mLayoutManager);
-                    mAdapter[0] = new AdapterItemsSingle(mDataset, mContext);
+                    if(mDataset.size()>0) {
+                        mAdapter[0] = new AdapterItemsSingle(mDataset, mContext);
+                        Log.d("Adapter","Linear Data Click"+mDataset.size());
+                    }
+                    else
+                    {
+                        Log.d("Adapter","Linear Loading Click"+mDataset.size());
+                        mAdapter[0] = new AdapterLoading();
+                    }
                     mRecyclerView.setAdapter(mAdapter[0]);
                 }
                 else
                 {
                     iv2.setImageResource(R.drawable.border_all_black);
                     grid = true;
-                    RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(mContext, 2);
-                    mRecyclerView.setLayoutManager(mLayoutManager);
-                    mAdapter[0] = new AdapterItems(mDataset, mContext);
+                    if(mDataset.size()>0) {
+                        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(mContext, 2);
+                        mRecyclerView.setLayoutManager(mLayoutManager);
+                        mAdapter[0] = new AdapterItems(mDataset, mContext);
+                        Log.d("Adapter","Grid Data Click"+mDataset.size());
+                    }
+                    else {
+                        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext);
+                        mRecyclerView.setLayoutManager(mLayoutManager);
+
+                        mAdapter[0] = new AdapterLoading();
+                        Log.d("Adapter","Grid Loading Click"+mDataset.size());
+                    }
                     mRecyclerView.setAdapter(mAdapter[0]);
                 }
             }
@@ -129,9 +166,10 @@ public class PlaceholderFragment extends Fragment {
                 fcf = temp;
                 setDataset(dataSnapshot);
                 Log.d("LLL", mDataset.size() + "");
+                RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(mContext, 2);
+                mRecyclerView.setLayoutManager(mLayoutManager);
                 RecyclerView.Adapter mAdapter = new AdapterItems(mDataset,mContext);
                 mRecyclerView.setAdapter(mAdapter);
-
             }
 
             @Override

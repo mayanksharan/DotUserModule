@@ -6,67 +6,13 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".ActivityServiceInfo"
-    tools:showIn="@layout/activity_serviceinfo">
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    tools:showIn="@layout/activity_serviceinfo"
+    android:nestedScrollingEnabled="true">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/item_recycler_view"
-            android:scrollbars="vertical"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_above="@+id/sdj2"
-            android:layout_weight="14"
+            android:layout_height="wrap_content"
+            android:id = "@+id/info_recycler_view"
             />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:id="@+id/sdj2"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:orientation="horizontal"
-            android:baselineAligned="false"
-            android:paddingTop="2dp"
-            android:layout_weight="1">
-            <TextView
-                android:layout_height="match_parent"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:background="#000"
-                android:text = "REMOVE"
-                android:textSize="15sp"
-                android:textColor="#fff"
-                android:gravity="center"
-                android:id = "@+id/rem_from_cart2"
-                >
-            </TextView>
-            <ImageView
-                android:layout_height="match_parent"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:src = "@drawable/ic_shopping_basket_white_18dp"
-                android:background="#000"
-                android:padding="4dp"
-                android:id = "@+id/addToCart_button2">
-
-            </ImageView>
-            <TextView
-                android:layout_height="match_parent"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:background="#000"
-                android:text = "SELECT AND PROCEED"
-                android:textSize="15sp"
-                android:textColor="#fff"
-                android:gravity="center"
-                >
-            </TextView>
-        </LinearLayout>
-    </LinearLayout>
 </LinearLayout>

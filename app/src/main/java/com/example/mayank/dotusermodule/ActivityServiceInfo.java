@@ -20,6 +20,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.io.IOException;
 
 public class ActivityServiceInfo extends AppCompatActivity {
@@ -27,7 +32,6 @@ public class ActivityServiceInfo extends AppCompatActivity {
     private ImageView sb,lb,img;
     private RecyclerView mRecyclerView;
     private Context mContext;
-    private TextView rem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,70 +43,17 @@ public class ActivityServiceInfo extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        img = (ImageView) findViewById(R.id.si_img);
-        sb = (ImageView) findViewById(R.id.si_sb);
-        lb = (ImageView) findViewById(R.id.si_lb);
-
         Intent intent = getIntent();
 
         Data temp = new Data(intent.getStringExtra("name"),intent.getStringExtra("gender"),intent.getStringExtra("length"),intent.getStringExtra("quality"),intent.getStringExtra("faceCut"),intent.getStringExtra("image"));
 
-        if(!intent.getStringExtra("image").equals("")) {
-            try {
-                Bitmap myBitmapAgain = decodeBase64(intent.getStringExtra("image"));
-                img.setImageBitmap(myBitmapAgain);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
 
-        sb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
-                sendIntent.setType("text/plain");
-                startActivity(sendIntent);
-            }
-        });
-
-        lb.setOnClickListener(new View.OnClickListener() {
-            boolean flag = false;
-            @Override
-            public void onClick(View v) {
-                if(flag) {
-                    flag = false;
-                    lb.setImageResource(R.drawable.ic_favorite_border_black_24dp);
-                }
-                else {
-                    flag = true;
-                    lb.setImageResource(R.drawable.ic_favorite_red_500_18dp);
-                }
-            }
-        });
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.item_recycler_view);
+        mRecyclerView = (RecyclerView) findViewById(R.id.info_recycler_view);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(mContext);
         mRecyclerView.setLayoutManager(mLayoutManager);
         RecyclerView.Adapter mAdapter = new AdapterInfo(temp);
         mRecyclerView.setAdapter(mAdapter);
 
-        rem = (TextView) findViewById(R.id.rem_from_cart2);
-        rem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext,ActivityCart.class);
-                startActivity(intent);
-            }
-        });
-
     }
 
-    public static Bitmap decodeBase64(String input) throws IOException
-    {
-        Log.d("img",input);
-        byte[] decodedBytes = Base64.decode(input,0);
-        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
-    }
 }
