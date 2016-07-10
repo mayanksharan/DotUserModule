@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -72,15 +73,35 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        Intent intent  = getIntent();
         try
         {
 
-            fil = getIntent().getIntExtra("Filter",0);
+            fil = intent.getIntExtra("Filter",0);
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
+        try
+        {
+            Log.e("jhsgdjh",intent.getStringExtra("activity"));
+            if(intent.getStringExtra("activity").equals("cart"))
+            {
+                Intent intent1 = new Intent(mContext,ActivityCart.class);
+                startActivity(intent1);
+            }
+            if(intent.getStringExtra("activity").equals("notification"))
+            {
+                Intent intent1 = new Intent(mContext,ActivityNotifications.class);
+                startActivity(intent1);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
 
     }
 
@@ -101,7 +122,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            Intent intent1 = new Intent(mContext,ActivityNotifications.class);
+            startActivity(intent1);
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
